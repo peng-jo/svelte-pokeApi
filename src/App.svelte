@@ -25,7 +25,7 @@
 			$page = $page + (PAGEVIEW - $page % PAGEVIEW);
 		} else {
 			$page = $page - (PAGEVIEW + $page % PAGEVIEW);
-		};
+		}
 		pageStart = $page;
 		$poke = await fetchApi();
 	}
@@ -33,20 +33,27 @@
 		const pnum = parseInt(num);
 		$page = pnum;
 		$poke = await fetchApi();
-	}
+	};
+	// const onclick = () => {
+	// 	console.log($page)
+	// 	$page += 1;
+	// }
 </script>
 <header>
-	<h1>현재 페이지 번호 : {$page}</h1>
+	<div class="header-cont">
+		<h1>현재 페이지 번호 : {$page}</h1>
+		<div class="p-container">
+			<input type="button" disabled={$page < PAGEVIEW} on:click={onClickPageButton} value={"<"}/>
+			<ul>
+			{#each Array(PAGEVIEW) as _, i}
+					<li on:click={()=> onClickNumber(pageStart + i)} class:highlight={$page === pageStart + i}>{pageStart + i}</li>
+			{/each}
+			</ul>
+			<input type="button" on:click={onClickPageButton} value={">"}/>
+		</div>
+	</div>
 </header>
-<div class="p-container">
-	<input type="button" disabled={$page < PAGEVIEW} on:click={onClickPageButton} value="<"/>
-<ul>
-{#each Array(PAGEVIEW) as _, i}
-    <li on:click={()=> onClickNumber(pageStart + i)} class:highlight={$page === pageStart + i}>{pageStart + i}</li>
-{/each}
-</ul>
-<input type="button" on:click={onClickPageButton} value=">"/>
-</div>
+
 
 {#each $poke as poke, index}
 	<div class="info-cont">
@@ -58,11 +65,22 @@
 		font-family: 'DOSMyungjo';
 	}
 	header {
-		margin: 20px 0;
+		width: 100%;
+		height: 150px;
 		display: flex;
 		justify-content: center;
 	}
+	header .header-cont {
+		width: 100%;
+		background: #f3f3f3;
+		position: fixed;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		border-bottom: 2px solid #000;
+	}
 	.p-container input {
+		cursor: pointer;
 		margin: 20px 0;
     border: none;
     background-color: transparent;
@@ -96,6 +114,11 @@
 	.info-cont {
 		width: 1200px;
 		margin: 0 auto;
+	}
+	@media (max-width: 1190px) {
+		.info-cont {
+			width: 80%;
+		}
 	}
 	.info-cont:last-child {
 		margin-bottom: 20px;
